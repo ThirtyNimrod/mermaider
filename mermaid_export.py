@@ -3,6 +3,7 @@
 import os
 import shutil
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 
@@ -42,6 +43,7 @@ def export_png(code: str) -> bytes:
             ],
             capture_output=True,
             text=True,
+            shell=(sys.platform == "win32"),
         )
         if result.returncode != 0:
             raise MermaidExportError(

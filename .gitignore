@@ -221,3 +221,7 @@ __marimo__/
 node_modules/
 package-lock.json
 puppeteer-cache/
+
+# Agents
+.agents/
+skills-lock.json

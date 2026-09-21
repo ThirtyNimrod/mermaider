@@ -1,0 +1,69 @@
+flowchart TB
+    %% Entry
+    A([🚀 Start]) --> B[Receive Request]
+    B --> C{Authenticated?}
+
+    %% Authentication
+    C -- No --> D[Return 401]
+    D --> Z([❌ End])
+
+    C -- Yes --> E[Validate Request]
+    E --> F{Valid Input?}
+
+    F -- No --> G[Return Validation Errors]
+    G --> Z
+
+    %% Main processing pipeline
+    F -- Yes --> H
+
+    subgraph Processing["⚙️ Processing Pipeline"]
+        direction TB
+
+        H[Create Job] --> I[Queue Job]
+
+        I --> J{Job Type}
+
+        J -- "Data" --> K[Process Data]
+        J -- "Media" --> L[Process Media]
+        J -- "AI" --> M[Run AI Pipeline]
+
+        %% Parallel work
+        K --> N
+        L --> N
+        M --> N
+
+        N{{"Parallel Processing"}}
+
+        N --> O[Store Results]
+        O --> P{Processing Successful?}
+
+        P -- No --> Q[Retry]
+        Q --> R{Retry Limit Reached?}
+
+        R -- No --> I
+        R -- Yes --> S[Move to Dead Letter Queue]
+
+        P -- Yes --> T[Publish Event]
+    end
+
+    %% Completion
+    T --> U[Send Notification]
+    U --> V([✅ Success])
+
+    S --> W[Alert Operations]
+    W --> X([⚠️ Failed])
+
+    %% Styling
+    classDef success fill:#d1fae5,stroke:#059669,color:#065f46
+    classDef error fill:#fee2e2,stroke:#dc2626,color:#7f1d1d
+    classDef process fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+    classDef decision fill:#fef3c7,stroke:#d97706,color:#78350f
+
+    class A,V success
+    class D,G,Z,X,W,S error
+    class B,E,H,I,K,L,M,O,T,U process
+    class C,F,J,P,R decision
+
+    %% Links
+    click B "https://example.com/api" "API documentation"
+    click M "https://example.com/ai" "AI pipeline"

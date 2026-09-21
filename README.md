@@ -6,17 +6,34 @@ A local Streamlit app for writing and previewing [Mermaid](https://mermaid.js.or
 - Right panel: an interactive (pan/zoom) live preview, with buttons to download the
   diagram as a transparent-background **PNG** and the source as a **.txt** file.
 
-## Setup
+## Prerequisites & Setup
 
-Requires **Python 3.9–3.13** (Python 3.14 is not yet supported by Streamlit) and Node.js (used only to run `mermaid-cli` for PNG export).
+### 1. Python Environment
+Requires **Python 3.9–3.13** (Python 3.14 is not yet supported by Streamlit).
 
 ```bash
 pip install -r requirements.txt   # use Python 3.13 if you have 3.14 installed
+```
+
+### 2. Node.js & NPM Dependencies
+Requires **Node.js 18+** with `npm` and `npx` available on your system `PATH`.
+
+The primary NPM element required by this project is:
+- **`@mermaid-js/mermaid-cli`**: Supplies the `mmdc` command-line tool used by `mermaid_export.py` to render high-resolution, transparent PNGs via headless Chromium.
+
+To install dependencies specified in `package.json`:
+```bash
 npm install
 ```
 
-`npm install` fetches `@mermaid-js/mermaid-cli`, which bundles its own headless Chromium —
-this is a one-time download and needs an internet connection.
+Alternatively, you can install the Mermaid CLI directly:
+```bash
+npm install --save-dev @mermaid-js/mermaid-cli
+```
+
+> **Note**: During `npm install`, Puppeteer downloads a bundled headless Chromium instance for diagram rendering. This requires an active internet connection on initial installation. Headless browser flags are managed in `puppeteer-config.json`.
+>
+> *(Note: The in-app interactive preview uses the pre-bundled scripts in `assets/`, so no web bundler or build step is needed.)*
 
 ## Run
 

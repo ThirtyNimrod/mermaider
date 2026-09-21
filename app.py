@@ -20,9 +20,16 @@ def load_preview_libs() -> tuple[str, str]:
     return mermaid_js, panzoom_js
 
 
+def render_preview(html_content: str, height: int = 580):
+    if hasattr(st, "iframe"):
+        st.iframe(html_content, height=height)
+    else:
+        st.components.v1.html(html_content, height=height, scrolling=False)
+
+
 def build_preview_html(code: str) -> str:
     mermaid_js, panzoom_js = load_preview_libs()
-    code_json = json.dumps(code)
+    code_json = json.dumps(code).replace("</", "<\\/")
     return f"""
     <div id="diagram-wrap" style="width:100%;height:560px;overflow:hidden;
          border:1px solid #444;border-radius:6px;background:#0e1117;">
@@ -89,27 +96,16 @@ with left:
     preview_col.button("Preview", on_click=preview_code, type="primary", use_container_width=True)
 
 with right:
-    st.components.v1.html(build_preview_html(st.session_state.previewed_code), height=580, scrolling=False)
-
-    png_bytes = None
-    export_error = None
-    if st.session_state.previewed_code.strip():
-        try:
-            png_bytes = cached_export_png(st.session_state.previewed_code)
-        except MermaidExportError as exc:
-            export_error = str(exc)
-
-    if export_error:
-        st.error(f"PNG export failed: {export_error}")
+    render_preview(build_preview_html(st.session_state.previewed_code), height=580)
 
     png_col, txt_col = st.columns(2)
     with png_col:
         st.download_button(
             "Download PNG",
-            data=png_bytes or b"",
+            data=lambda: cached_export_png(st.session_state.previewed_code),
             file_name="diagram.png",
             mime="image/png",
-            disabled=png_bytes is None,
+            disabled=not st.session_state.previewed_code.strip(),
             use_container_width=True,
         )
     with txt_col:
