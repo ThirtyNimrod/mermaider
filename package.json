@@ -1,0 +1,8 @@
+{
+  "name": "mermaider",
+  "private": true,
+  "description": "Local dependency for PNG export (mermaid-cli) used by the Streamlit app.",
+  "devDependencies": {
+    "@mermaid-js/mermaid-cli": "^10.9.1"
+  }
+}
