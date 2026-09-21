@@ -216,3 +216,8 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Node (mermaid-cli, used for PNG export)
+node_modules/
+package-lock.json
+puppeteer-cache/
